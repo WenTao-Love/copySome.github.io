@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Java接口技术 Copysome.GitHub.io by WenTao-Love</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Java接口技术 Copysome.GitHub.io</h1>
+        <h2>感谢大牛们分享，以下内容纯属抄袭，敬请见谅海涵</h2>
+        <a href="https://github.com/WenTao-Love/copySome.github.io" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="copysomegithubio" class="anchor" href="#copysomegithubio" aria-hidden="true"><span class="octicon octicon-link"></span></a>copySome.github.io</h1>
+
+<p>感谢大牛们分享，以下内容纯属抄袭，敬请见谅海涵</p>
+
+<p>1.RMI技术</p>
+
+<p>1.1 RMI技术介绍</p>
+
+<p>RMI全称是Remote Method Invocation－远程方法调用，Java RMI在JDK1.1中实现的，其威力就体现在它强大的开发分布式网络应用的能力上，是纯Java的网络分布式应用系统的核心解决方案之一。其实它可以被看作是RPC的Java版本。但是传统RPC并不能很好地应用于分布式对象系统。而Java RMI 则支持存储于不同地址空间的程序级对象之间彼此进行通信，实现远程对象之间的无缝远程调用。</p>
+
+<p>RMI目前使用Java远程消息交换协议JRMP（Java Remote Messaging Protocol）进行通信。由于JRMP是专为Java对象制定的，Java RMI具有Java的"Write Once,Run Anywhere"的优点，是分布式应用系统的百分之百纯Java解决方案。用Java RMI开发的应用系统可以部署在任何支持JRE（Java Run Environment Java，运行环境）的平台上。但由于JRMP是专为Java对象制定的，因此，RMI对于用非Java语言开发的应用系统的支持不足。不能与用非Java语言书写的对象进行通信。</p>
+
+<p>RMI可利用标准Java本机方法接口JNI与现有的和原有的系统相连接。RMI还可利用标准JDBC包与现有的关系数据库连接。RMI/JNI和RMI/JDBC相结合，可帮助您利用RMI与目前使用非Java语言的现有服务器进行通信，而且在您需要时可扩展Java在这些服务器上的使用。RMI可帮助您在扩展使用时充分利用Java的强大功能。</p>
+
+<p>Java RMI极大依赖于接口,在需要创建一个远程对象时,程序员通过传递一个接口来隐藏底层的实现细节.客户端得到的远程对象句柄正好与本地的根代码相连,由后者负责透过网络通信,这样一来,程序猿只关心如何通过自己的接口句柄发送消息.</p>
+
+<p>1.2 RMI远程方法调用的组成</p>
+
+<p>一个正常的RMI系统有下面几个部分组成
+・远程服务的接口定义 
+・远程服务接口的具体实现 
+・桩（Stub）和框架（Skeleton）文件 
+・一个运行远程服务的服务器 
+・一个RMI命名服务，它允许客户端去发现这个远程服务 
+・类文件的提供者（一个HTTP或者FTP服务器） 
+・一个需要这个远程服务的客户端程序 </p>
+
+<p>方法调用从客户对象经占位程序（Stub)、远程引用层(Remote Reference Layer)和传输层（Transport Layer）向下，传递给主机，然后再次经传 输层，向上穿过远程调用层和骨干网（Skeleton），到达服务器对象。 占位程序扮演着远程服务器对象的代理的角色，使该对象可被客户激活。 远程引用层处理语义、管理单一或多重对象的通信，决定调用是应发往一个服务器还是多个。传输层管理实际的连接，并且追踪可以接受方法调用的远程对象。服务器端的骨干网完成对服务器对象实际的方法调用，并获取返回值。返回值向下经远程引用层、服务器端的传输层传递回客户端，再向上经传输层和远程调用层返回。最后，占位程序获得返回值。 </p>
+
+<p>要完成以上步骤需要有以下几个步骤： </p>
+
+<p>1、 生成一个远程接口 </p>
+
+<p>2、 实现远程对象(服务器端程序)</p>
+
+<p>3、 生成占位程序和骨干网(服务器端程序)</p>
+
+<p>4、 编写服务器程序 </p>
+
+<p>5、 编写客户程序 </p>
+
+<p>6、 注册远程对象 </p>
+
+<p>7、 启动远程对象 </p>
+
+<p>1.3 RMI远程方法调用的优点</p>
+
+<p>从最基本的角度看，RMI是Java的远程过程调用(RPC)机制。与传统的RPC系统相比，RMI具有若干优点，因为它是Java面向对象方法的一部分。传统的RPC系统采用中性语言，所以是最普通的系统--它们不能提供所有可能的目标平台所具有的功能。 </p>
+
+<p>RMI以Java为核心，可与采用本机方法与现有系统相连接。这就是说，RMI可采用自然、直接和功能全面的方式为您提供分布式计算技术，而这种技术可帮助您以不断递增和无缝的方式为整个系统添加Java功能。</p>
+
+<p>RMI的主要优点如下： </p>
+
+<p>面向对象：RMI可将完整的对象作为参数和返回值进行传递，而不仅仅是预定义的数据类型。也就是说，您可以将类似Java哈希表这样的复杂类型作为一个参数进行传递。而在目前的RPC系统中，您只能依靠客户机将此类对象分解成基本数据类型，然后传递这些数据类型，最后在服务器端重新创建哈希表。RMI则不需额外的客户程序代码(将对象分解成基本数据类型)，直接跨网传递对象。 </p>
+
+<p>可移动属性：RMI可将属性(类实现程序)从客户机移动到服务器，或者从服务器移到客户机。这样就能具备最大的灵活性，因为政策改变时只需要您编写一个新的Java类，并将其在服务器主机上安装一次即可。 </p>
+
+<p>设计方式：对象传递功能使您可以在分布式计算中充分利用面向对象技术的强大功能，如二层和三层结构系统。如果您能够传递属性，那么您就可以在您的解决方案中使用面向对象的设计方式。所有面向对象的设计方式无不依靠不同的属性来发挥功能，如果不能传递完整的对象--包括实现和类型--就会失去设计方式上所提供的优点。 </p>
+
+<p>安　　全：RMI使用Java内置的安全机制保证下载执行程序时用户系统的安全。RMI使用专门为保护系统免遭恶意小应用程序侵害而设计的安全管理程序，可保护您的系统和网络免遭潜在的恶意下载程序的破坏。在情况严重时，服务器可拒绝下载任何执行程序。 </p>
+
+<p>便于编写和使用：RMI使得Java远程服务程序和访问这些服务程序的Java客户程序的编写工作变得轻松、简单。远程接口实际上就是Java接口。服务程序大约用三行指令宣布本身是服务程序，其它方面则与任何其它Java对象类似。这种简单方法便于快速编写完整的分布式对象系统的服务程序，并快速地制做软件的原型和早期版本，以便于进行测试和评估。因为RMI程序编写简单，所以维护也简单。 </p>
+
+<p>可连接现有/原有的系统：RMI可通过Java的本机方法接口JNI与现有系统进行进行交互。利用RMI和JNI，您就能用Java语言编写客户端程序，还能使用现有的服务器端程序。在使用RMI/JNI与现有服务器连接时，您可以有选择地用Java重新编写服务程序的任何部分，并使新的程序充分发挥Java的功能。类似地，RMI可利用JDBC、在不修改使用数据库的现有非Java源代码的前提下与现有关系数据库进行交互。 </p>
+
+<p>编写一次，到处运行：RMI是Java“编写一次，到处运行 ”方法的一部分。任何基于RMI的系统均可100%地移植到任何Java虚拟机上，RMI/JDBC系统也不例外。如果使用RMI/JNI与现有系统进行交互工作,则采用JNI编写的代码可与任何Java虚拟机进行编译、运行。 </p>
+
+<p>分布式垃圾收集：RMI采用其分布式垃圾收集功能收集不再被网络中任何客户程序所引用的远程服务对象。与Java 虚拟机内部的垃圾收集类似，分布式垃圾收集功能允许用户根据自己的需要定义服务器对象，并且明确这些对象在不再被客户机引用时会被删除。 </p>
+
+<p>并行计算：RMI采用多线程处理方法，可使您的服务器利用这些Java线程更好地并行处理客户端的请求。Java分布式计算解决方案：RMI从JDK 1.1开始就是Java平台的核心部分，因此，它存在于任何一台1.1 Java虚拟机中。所有RMI系统均采用相同的公开协议，所以，所有Java 系统均可直接相互对话，而不必事先对协议进行转换。</p>
+
+<p>1.4 RMI和CORBA的关系</p>
+
+<p>RMI 和 CORBA 常被视为相互竞争的技术，因为两者都提供对远程分布式对象的透明访问。但这两种技术实际上是相互补充的，一者的长处正好可以弥补另一者的短处。RMI 和 CORBA 的结合产生了 RMI-IIOP，RMI-IIOP 是企业服务器端 Java 开发的基础。1997 年，IBM 和 Sun Microsystems启动了一项旨在促进 Java 作为企业开发技术的发展的合作计划。两家公司特别着力于如何将 Java 用作服务器端语言，生成可以结合进现有体系结构的企业级代码。所需要的就是一种远程传输技术，它兼有 Java 的 RMI（Remote Method Invocation，远程方法调用）较少的资源占用量和更成熟的 CORBA（Common Object Request Broker Architecture，公共对象请求代理体系结构）技术的健壮性。出于这一需要，RMI-IIOP问世了，它帮助将 Java 语言推向了目前服务器端企业开发的主流语言的领先地位。 
+（来源：sun；matrix.org.cn）</p>
+
+<p>1.5 实例
+1)定义一个远程接口 IHello.java</p>
+
+<p>import java.rmi.Remote;</p>
+
+<p>public interface IHello extends Remote {</p>
+
+<p>public String sayHello(String name) throws java.rmi.RemoteException;</p>
+
+<p>}</p>
+
+<p>2)实现远程的接口(服务端就在此远程接口的实现类中) HelloImpl.java</p>
+
+<p>import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+public class HelloImpl extends UnicastRemoteObject implements IHello {
+    // 这个实现必须有一个显式的构造函数，并且要抛出一个RemoteException异常<br>
+    protected HelloImpl() throws RemoteException {
+        super();
+    }
+    /**
+     * 说明清楚此属性的业务含义
+     */
+    private static final long serialVersionUID = 4077329331699640331L;
+    public String sayHello(String name) throws RemoteException {
+        return "Hello " + name + " ^_^ ";
+    }
+    public static void main(String[] args) {
+        try {
+            IHello hello = new HelloImpl();
+            java.rmi.Naming.rebind("rmi://localhost:1099/hello", hello);
+            System.out.print("Ready");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}</p>
+
+<p>3)新建一个RMI客户端调用程序 Hello_RMI_Client.java</p>
+
+<p>import java.rmi.Naming;
+public class Hello_RMI_Client {
+    public static void main(String[] args) {
+        try {
+            IHello hello = (IHello) Naming.lookup("rmi://localhost:1099/hello");
+                System.out.println(hello.sayHello("zhangxianxin"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}</p>
+
+<p>4)编译并运行</p>
+
+<p>4.1 用javac命令编译IHello.java、HelloImpl.java、Hello_RMI_Client.java</p>
+
+<blockquote>
+<p>javac *.java</p>
+</blockquote>
+
+<p>4.2 用rmic命令生成桩和框架文件</p>
+
+<blockquote>
+<p>rmic HelloImpl</p>
+</blockquote>
+
+<p>成功执行完上面的命令可以发现生成一个HelloImpl_stub.class文件，如果JDK是使用Java2SDK，那么还可以发现多出一个HelloImpl_Skel.class文件。如果服务端程序与客户端程序在同一台机器上并在同一目录中，则可以省略掉接口实现类生成的桩和框架文件，但这就失去了使用RMI的意义，而如果要在不同的JVM上运行时，客户端程序就必须得依靠服务端运程方法实现的桩和框架文件以及接口类。</p>
+
+<p>4.3 运行注册程序RMIRegistry，必须在包含刚写的类的目录下运行这个注册程序。</p>
+
+<blockquote>
+<p>rmiregistry</p>
+</blockquote>
+
+<p>注册程序开始运行了，不要管他，现在切换到另外一个控制台运行服务器 </p>
+
+<p>4.4 运行服务器HelloImpl</p>
+
+<blockquote>
+<p>java HelloImpl</p>
+</blockquote>
+
+<p>当启动成功出现Ready...... 这个服务器就开始工作了，把接口的实现加载到内存等待客户端的联接。现在切换到第三个控制台，启动我们的客户端。</p>
+
+<p>4.5 启动客户端:为了在其他的机器运行客户端程序你需要一个远程接口(IHello.class) 和一个stub(HelloImpl_Stub.class)。 使用如下命令运行客户端</p>
+
+<blockquote>
+<p>java Hello_RMI_Client</p>
+</blockquote>
+
+<p>当运行成功会在控制台打印：Hello zhangxianxin ^_^</p>
+
+<p>备注：如果不想在控制台上开启RMI注册程序RMIRegistry的话，可在RMI服务类程序中添加LocateRegistry.createRegistry(1099); 如下所示：</p>
+
+<p>修改后的HelloImpl.java代码如下：</p>
+
+<p>import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
+public class HelloImpl extends UnicastRemoteObject implements IHello {
+    // 这个实现必须有一个显式的构造函数，并且要抛出一个RemoteException异常<br>
+    protected HelloImpl() throws RemoteException {
+        super();
+    }</p>
+
+<pre><code>private static final long serialVersionUID = 4077329331699640331L;
+public String sayHello(String name) throws RemoteException {
+    return "Hello " + name + " ^_^ ";
+}
+public static void main(String[] args) {
+    try {
+        IHello hello = new HelloImpl();
+        LocateRegistry.createRegistry(1099); //加上此程序，就可以不要在控制台上开启RMI的注册程序，1099是RMI服务监视的默认端口
+        java.rmi.Naming.rebind("rmi://localhost:1099/hello", hello);
+        System.out.print("Ready");
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+}
+</code></pre>
+
+<p>1.6简单实例二</p>
+
+<p>以下用一个文件交换程序来介绍RMI的应用。这个应用允许客户端从服务端交换(或下载)所有类型的文件。第一步是定义一个远程的接口，这个接口指定的签名方法将被服务端提供和被客户端调用。</p>
+
+<p>1．定义一个远程接口 </p>
+
+<p>IFileUtil.java代码如下: </p>
+
+<p>import java.rmi.Remote;</p>
+
+<p>import java.rmi.RemoteException;</p>
+
+<p>public interface IFileUtil extends Remote {</p>
+
+<p>public byte[] downloadFile(String fileName) throws RemoteException;</p>
+
+<p>}
+接口IFileDownload提供了一个downloadFile方法，然后返回一个相应的文件数据。</p>
+
+<p>2．实现远程的接口 
+　　类FileImpl继承于UnicastRemoteObject类。这显示出FileImpl类是用来创建一个单独的、不能复制的、远程的对象，这个对象使用RMI默认的基于TCP的通信方式。</p>
+
+<p>FileUtilImpl.java代码如下:</p>
+
+<p>import java.io.BufferedInputStream;</p>
+
+<p>import java.io.File;</p>
+
+<p>import java.io.FileInputStream;</p>
+
+<p>import java.rmi.RemoteException;</p>
+
+<p>import java.rmi.server.UnicastRemoteObject;</p>
+
+<p>public class FileUtilImpl extends UnicastRemoteObject implements IFileUtil {</p>
+
+<p>protected FileUtilImpl() throws RemoteException {</p>
+
+<p>super();</p>
+
+<p>}</p>
+
+<p>private static final long serialVersionUID = 7594622080290821912L;</p>
+
+<p>public byte[] downloadFile(String fileName) throws RemoteException{</p>
+
+<p>File file = new File(fileName);</p>
+
+<p>byte buffer[] = new byte[(int) file.length()];</p>
+
+<p>int size = buffer.length;</p>
+
+<p>System.out.println("download file size = "+size +"b");</p>
+
+<p>if(size&gt;1024<em>1024</em>10){//限制文件大小不能超过10M，文件太大可能导制内存溢出！</p>
+
+<p>throw new RemoteException("Error:");</p>
+
+<p>}</p>
+
+<p>try {</p>
+
+<p>BufferedInputStream input = new BufferedInputStream(</p>
+
+<p>new FileInputStream(fileName));</p>
+
+<p>input.read(buffer, 0, buffer.length);</p>
+
+<p>input.close();</p>
+
+<p>System.out.println("Info:");</p>
+
+<p>return buffer;</p>
+
+<p>} catch (Exception e) {</p>
+
+<p>System.out.println("FileUtilImpl: " + e.getMessage());</p>
+
+<p>e.printStackTrace();</p>
+
+<p>return null;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>3．编写服务端 </p>
+
+<p>（1)创建并安装一个RMISecurityManager实例。</p>
+
+<p>（2)创建一个远程对象的实例。</p>
+
+<p>（3)使用RMI注册工具来注册这个对象。</p>
+
+<p>FileUtilServer.java 代码如下：</p>
+
+<p>import java.rmi.Naming;</p>
+
+<p>import java.rmi.RMISecurityManager;</p>
+
+<p>public class FileUtilServer {</p>
+
+<p>public static void main(String argv[]) {</p>
+
+<p>try {</p>
+
+<p>IFileUtil file = new FileUtilImpl();</p>
+
+<p>//LocateRegistry.createRegistry(1099); //加上此程序，就可以不要在控制台上开启RMI的注册程序，1099是RMI服务监视的默认端口</p>
+
+<p>Naming.rebind("rmi://127.0.0.1/FileUtilServer", file);</p>
+
+<p>System.out.print("Ready");</p>
+
+<p>} catch (Exception e) {</p>
+
+<p>System.out.println("FileUtilServer: " + e.getMessage());</p>
+
+<p>e.printStackTrace();</p>
+
+<p>}
+}
+}
+声明Naming.rebind("rmi://127.0.0.1/FileUtilServer", file) 中假定了RMI注册工具(RMI registry )使用并启动了1099端口。如果在其他端口运行了RMI注册工具，则必须在这个声明中定义。例如，如果RMI注册工具在4500端口运行，则声明应为：　　Naming.rebind("rmi://127.0.0.1:4500/FileUtilServer", file) </p>
+
+<p>另外我们已经同时假定了我们的服务端和RMI注册工具是运行在同一台机器上的。否则需要修改rebind方法中的地址。</p>
+
+<p>4．编写客户端 </p>
+
+<p>客户端可以远程调用远程接口(FileInterface)中的任何一个方法。无论如何实现，客户端必须先从RMI注册工具中获取一个远程对象的引用。当引用获得后，方法downloadFile被调用。在执行过程中，客户端从命令行中获得两个参数，第一个是要下载的文件名,第二个是要下载的机器的地址，在对应地址的机器上运行服务端。</p>
+
+<p>FileUtilClient.java 代码如下：</p>
+
+<p>import java.io.BufferedOutputStream;</p>
+
+<p>import java.io.File;</p>
+
+<p>import java.io.FileOutputStream;</p>
+
+<p>import java.rmi.Naming;</p>
+
+<p>public class FileUtilClient {</p>
+
+<p>public static void main(String args[]) {</p>
+
+<p>if (args.length != 3) {</p>
+
+<p>System.out.println("第一个参数：RMI服务的IP地址");</p>
+
+<p>System.out.println("第二个参数：要下载的文件名");</p>
+
+<p>System.out.println("第三个参数：要文件保存位置");</p>
+
+<p>System.exit(0);</p>
+
+<p>}</p>
+
+<p>try {</p>
+
+<p>String name = "rmi://" + args[0] + "/FileUtilServer";</p>
+
+<p>IFileUtil fileUtil = (IFileUtil) Naming.lookup(name);</p>
+
+<p>byte[] filedata = fileUtil.downloadFile(args[1]);</p>
+
+<p>if(filedata==null){</p>
+
+<p>System.out.println("Error：");</p>
+
+<p>System.exit(0);</p>
+
+<p>}</p>
+
+<p>File file = new File(args[2]);</p>
+
+<p>System.out.println("file.getAbsolutePath() = "+file.getAbsolutePath());</p>
+
+<p>BufferedOutputStream output = new BufferedOutputStream(</p>
+
+<p>new FileOutputStream(file.getAbsolutePath()));</p>
+
+<p>output.write(filedata, 0, filedata.length);</p>
+
+<p>output.flush();</p>
+
+<p>output.close();</p>
+
+<p>System.out.println("~~~<del>End</del>~~~");</p>
+
+<p>} catch (Exception e) {</p>
+
+<p>System.err.println("FileUtilServer exception: " + e.getMessage());</p>
+
+<p>e.printStackTrace();</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>5．运行程序
+为了运行程序，我们必须使用rmic来编译生成stubs和skeletons:</p>
+
+<blockquote>
+<p>rmic FileUtilImpl</p>
+</blockquote>
+
+<p>这将会生成FileUtilImpl_Stub.class和FileUtilImpl_Skel.class两个文件。stub是客户端的代理，而skeleton是服务端的框架。服务端和客户端采用javac来编译（如果服务端和客户端在两个不同的机器，则必须复制一个IFileUtil接口）。</p>
+
+<p>使用rmiregistry或者start rmiregistry 命令来运行RMI注册工具到window系统默认的端口上：</p>
+
+<blockquote>
+<p>rmiregistry portNumber
+此处的portNumber为端口,RMI注册工具运行之后，需要运行服务FileUtilServer，因为RMI的安全机制将在服务端发生作用,所以必须增加一条安全策略： grant{permission java.security.AllPermission "", "";};</p>
+</blockquote>
+
+<p>为了运行服务端，需要有除客户类(FileUtilClient.class)之外所有的类文件。确认安全策略在policy.txt文件之后,使用如下命令来运行服务器。</p>
+
+<blockquote>
+<p>java -Djava.security.policy=policy.txt FileUtilServer</p>
+</blockquote>
+
+<p>为了在其他的机器运行客户端程序,需要一个远程接口(IFileUtil.class)和一个stub(FileUtilImpl_Stub.class)。 使用如下命令运行客户端:</p>
+
+<blockquote>
+<p>java FileUtilClient fileName machineName savePath
+　　这里fileName是要下载的文件名,machineName 是要下载的文件所在的机器(也是服务端所在的机器),savePath 是要将下载过来的文件保存的路径（带文件名）。如果全部通过的话,当客户端运行后，则这个文件将被下载到本地。</p>
+</blockquote>
+
+<p>1.7 Spring对RMI的支持</p>
+
+<p>1.使用RMI暴露服务</p>
+
+<p>使用Spring的RMI支持，你可以通过RMI基础设施透明的暴露你的服务。设置好Spring的RMI支持后，你会看到一个和远程EJB接口类似的配置，只是没有对安全上下文传递和远程事务传递的标准支持。当使用RMI调用器时，Spring对这些额外的调用上下文提供了钩子，你可以在此插入安全框架或者定制的安全证书。</p>
+
+<ol>
+<li>使用 RmiServiceExporter 暴露服务</li>
+</ol>
+
+<p>使用 RmiServiceExporter，我们可以把AccountService对象的接口暴露成RMI对象。可以使用 RmiProxyFactoryBean 或者在传统RMI服务中使用普通RMI来访问该接口。RmiServiceExporter 显式地支持使用RMI调用器暴露任何非RMI的服务。 </p>
+
+<p>当然，我们首先需要在Spring BeanFactory中设置我们的服务： </p>
+
+<p></p>
+
+<pre><code>&lt;!-- any additional properties, maybe a DAO? --&gt;
+</code></pre>
+
+<p>
+然后，我们将使用 RmiServiceExporter 来暴露我们的服务： </p>
+
+<p></p>
+
+
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+
+
+<p></p>
+
+<p>
+正如你所见，我们覆盖了RMI注册的端口号。通常，你的应用服务也会维护RMI注册，最好不要和它冲突。更进一步来说，服务名是用来绑定下面的服务的。所以本例中，服务绑定在 rmi://HOST:1199/AccountService。在客户端我们将使用这个URL来链接到服务。 </p>
+
+<p>注意：我们省略了一个属性，就是 servicePort 属性，它的默认值为0。 这表示在服务通信时使用匿名端口。当然如果你愿意的话，也可以指定一个不同的端口。 </p>
+
+<ol>
+<li>在客户端链接服务</li>
+</ol>
+
+<p>我们的客户端是一个使用AccountService来管理account的简单对象： </p>
+
+<p>public class SimpleObject {</p>
+
+<p>private AccountService accountService;</p>
+
+<p>public void setAccountService(AccountService accountService) {</p>
+
+<pre><code>this.accountService = accountService;
+</code></pre>
+
+<p>}</p>
+
+<p>}
+为了把服务连接到客户端上，我们将创建另一个单独的bean工厂，它包含这个简单对象和服务链接配置位： </p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p>
+这就是我们在客户端为支持远程account服务所需要做的。Spring将透明的创建一个调用器并且通过RmiServiceExporter使得account服务支持远程服务。在客户端，我们用RmiProxyFactoryBean连接它。</p>
+
+<p>1.8 Spring对RMI支持的实际应用实例</p>
+
+<p>在OMAS系统中提供给业务系统的RMI客户反馈服务的实现服务暴露是通过Resource/modules/interfaces/spring-conf/serviceContext.xml配置文件实现的，而远程接口的实现类必须序列化（即实现Serializable接口）。</p>
+
+<p>Resource/modules/interfaces/spring-conf/serviceContext.xml的内容如下：</p>
+
+<p>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</p>
+
+<p>&lt;!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "<a href="http://www.springframework.org/dtd/spring-beans-2.0.dtd%22%3E">http://www.springframework.org/dtd/spring-beans-2.0.dtd"&gt;</a></p>
+
+<p></p>
+
+
+
+<p></p>
+
+<p></p>
+
+
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+
+
+
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p>对应的暴露的服务接口如下：</p>
+
+<p>public interface IFeedbackWebService {</p>
+
+<p>/**</p>
+
+<ul>
+<li><p><b>方法用途和描述:</b> 客户反馈RMI服务端接口方法<br></p></li>
+<li><p><b>方法的实现逻辑描述：</b> 通过RMI提供服务，Spring支持的RMI远程调用</p></li>
+<li><p><a href="https://github.com/param" class="user-mention">@param</a> systemID : 业务系统的唯一标识</p></li>
+<li><p><a href="https://github.com/param" class="user-mention">@param</a> feedbackType ：用户反馈的类型（1-系统BUG、2-系统易用性、3-客服人员态度、4-运维人员态度、5-其他）</p></li>
+<li><p><a href="https://github.com/param" class="user-mention">@param</a> feedbackContent ：用户反馈的正文内容</p></li>
+<li>
+<p><a href="https://github.com/return" class="user-mention">@return</a> 反馈是否成功 true | false</p>
+
+<p>*/</p>
+</li>
+</ul>
+
+<p>public boolean setFeedback(String systemID, FeedbackType feedbackType,</p>
+
+<p>String feedbackContent) throws OMASServiceException ;</p>
+
+<p>}</p>
+
+<p>暴露的服务接口实现如下：</p>
+
+<p>public class FeedbackWebServiceImpl implements IFeedbackWebService,  Serializable {</p>
+
+<p>private static Log _log = LogFactory.getLog(FeedbackWebServiceImpl.class);</p>
+
+<p>private static final long serialVersionUID = -5532505108644974594L;</p>
+
+<p>/**</p>
+
+<ul>
+<li>
+<p>客户反馈服务接口</p>
+
+<p>*/</p>
+</li>
+</ul>
+
+<p>private IFeedbackOperationService feedbackService;</p>
+
+<p>/**</p>
+
+<ul>
+<li><p>方法用途和描述: 注入运营模块的添加客户反馈的服务</p></li>
+<li>
+<p><a href="https://github.com/param" class="user-mention">@param</a> feedbackWebService 运营模块服务</p>
+
+<p>*/</p>
+</li>
+</ul>
+
+<p>public void setFeedbackService(IFeedbackOperationService feedbackWebService) {</p>
+
+<p>_log.info("注入运营模块的添加客户反馈的服务");</p>
+
+<p>this.feedbackService = feedbackWebService;</p>
+
+<p>}</p>
+
+<p>/**</p>
+
+<ul>
+<li><p>方法用途和描述: 外部接口子系统中添加客户反馈的方法</p></li>
+<li><p><a href="https://github.com/param" class="user-mention">@param</a> systemID ：业务系统ID</p></li>
+<li><p><a href="https://github.com/param" class="user-mention">@param</a> feedbackType ：反馈类型</p></li>
+<li><p><a href="https://github.com/param" class="user-mention">@param</a> feedbackContent ：反馈内容</p></li>
+<li>
+<p><a href="https://github.com/return" class="user-mention">@return</a> 操作是否成功 ture or false</p>
+
+<ul>
+<li>
+<a href="https://github.com/throws" class="user-mention">@throws</a> ServiceException </li>
+</ul>
+
+<p>*/</p>
+</li>
+</ul>
+
+<p>public boolean setFeedback(String systemID, FeedbackType feedbackType, String feedbackContent) throws OMASServiceException {</p>
+
+<p>_log.info("进入到外部接口的添加客户反馈的方法");</p>
+
+<p>if (BlankUtil.isBlank(systemID) || BlankUtil.isBlank(feedbackType)</p>
+
+<p>|| BlankUtil.isBlank(feedbackContent)) {</p>
+
+<p>_log.error("添加客户反馈的接口参数为空！");</p>
+
+<p>throw new OMASServiceException("omas.interfaces.001");//添加客户反馈的接口参数为空</p>
+
+<p>}</p>
+
+<p>WebServiceFeedbackVO vo = new WebServiceFeedbackVO();</p>
+
+<p>vo.setFeedbackType(String.valueOf(feedbackType.getValue()));</p>
+
+<p>vo.setFeedbackContent(feedbackContent);</p>
+
+<p>vo.setSystemID(systemID);</p>
+
+<p>_log.info("调用运营子系统的添加客户反馈的方法开始！");</p>
+
+<p>try {</p>
+
+<p>if (feedbackService == null) {</p>
+
+<p>_log.error("运营模块服务为空");</p>
+
+<p>throw new OMASServiceException("omas.interfaces.002");//运营模块服务为空</p>
+
+<p>}</p>
+
+<p>feedbackService.addFeedbackOperation(vo);</p>
+
+<p>} catch (ServiceException e) {</p>
+
+<p>_log.error("调用运营子系统的添加客户反馈出现异常："+e.getMessage());</p>
+
+<p>if(ExceptionConstants.EXCEPTION_OMAS_FEEDBACK_VO.equals(e.getMsgKey())){//客户调用接口的对像为空</p>
+
+<p>throw new OMASServiceException("omas.interfaces.003");</p>
+
+<p>} if(ExceptionConstants.EXCEPTION_OMAS_FEEDBACK_SYSTEMID.equals(e.getMsgKey())){//业务系统标识ID为空</p>
+
+<p>throw new OMASServiceException("omas.omasservice.010");</p>
+
+<p>} if(ExceptionConstants.EXCEPTION_OMAS_FEEDBACK_SIZE.equals(e.getMsgKey())){//非法的业务系统唯一标识</p>
+
+<p>throw new OMASServiceException("omas.interfaces.004");</p>
+
+<p>} if(ExceptionConstants.EXCEPTION_OMAS_FEEDBACK_BASE.equals(e.getMsgKey())){//数据库访问出了一点小问题！</p>
+
+<p>throw new OMASServiceException("omas.interfaces.005");</p>
+
+<p>}</p>
+
+<p>throw new OMASServiceException("omas.omasservice.000");//未捕获到的异常信息！</p>
+
+<p>}</p>
+
+<p>return true;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>接口方法setFeedback（String, FeedbackType, String）的实现大家不用关心，其与RMI并无关系，只是一些纯业务处理逻辑而已，要注意的是接口实现类必须实现 IfeedbackWebService和Serializable接口。</p>
+
+<p>在客户本地的omasservice.jar包中客户反馈的RMI客户端的配置如下：</p>
+
+<p>Resource/config/omasrmi-client.xml</p>
+
+<p>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</p>
+
+<p>&lt;!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "<a href="http://www.springframework.org/dtd/spring-beans-2.0.dtd%22%3E">http://www.springframework.org/dtd/spring-beans-2.0.dtd"&gt;</a></p>
+
+<p></p>
+
+<p>&lt;bean id="fbWebServiceProxy"</p>
+
+<p>class="org.springframework.remoting.rmi.RmiProxyFactoryBean"&gt;</p>
+
+<p></p>
+
+<p>rmi://127.0.0.1:1199/FeedbackRMIService</p>
+
+<p></p>
+
+<p></p>
+
+<p>com.ce.omas.interfaces.service.IFeedbackWebService</p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p>客户端调用RMI服务的方法如下所示：</p>
+
+<p>/**</p>
+
+<ul>
+<li><p>方法用途和描述: 客户反馈：通过RMI方法与OMAS通讯</p></li>
+<li><p>方法的实现逻辑描述：</p></li>
+<li><p><a href="https://github.com/param" class="user-mention">@param</a> feedbackType</p></li>
+<li><p><a href="https://github.com/param" class="user-mention">@param</a> feedbackContent</p></li>
+<li><p><a href="https://github.com/return" class="user-mention">@return</a></p></li>
+<li><p><a href="https://github.com/throws" class="user-mention">@throws</a> OMASServiceException</p></li>
+</ul>
+
+<p>*/</p>
+
+<p>public static boolean setFeedback_RMIClient(String systemID, FeedbackType feedbackType, String feedbackContent) throws OMASServiceException {</p>
+
+<p>if (systemID == null || "".equals(systemID)) {</p>
+
+<p>_log.error("业务系统标识为空或不是对象");</p>
+
+<p>throw new OMASServiceException("omas.omasservice.010");</p>
+
+<p>}</p>
+
+<p>String rmiClientConfigFilePath = PropertyReader .getValue(ConfigConstants.OMASSERVICE_CONFIG_PATH, ConfigConstants.RMI_CLIENT_CONFIG_FILEPATH);</p>
+
+<p>if (rmiClientConfigFilePath == null || "".equals(rmiClientConfigFilePath)) {</p>
+
+<p>_log.error("配置文件错误：Key为空或不存在");</p>
+
+<p>throw new OMASServiceException("omas.omasservice.006");</p>
+
+<p>}</p>
+
+<p>_log.info("rmiClientConfigPath = " + rmiClientConfigFilePath);</p>
+
+<p>ApplicationContext context = null;</p>
+
+<p>try {</p>
+
+<p>context = new ClassPathXmlApplicationContext(rmiClientConfigFilePath);</p>
+
+<p>} catch (Exception e) {</p>
+
+<p>_log.error("客户反馈：解析rmi-config.xml文件时出现异常：" + e);</p>
+
+<p>_log.info("rmi-config.xml文件路径："+rmiClientConfigFilePath);</p>
+
+<p>throw new OMASServiceException("omas.omasservice.007");</p>
+
+<p>}</p>
+
+<p>IFeedbackWebService service = null;</p>
+
+<p>try {</p>
+
+<p>service = (IFeedbackWebService) context .getBean("fbWebServiceProxy");</p>
+
+<p>} catch (Exception e) {</p>
+
+<p>_log.error("从Spring的RMI客户端Bean配置文件获取服务对象时出现异常：" + e);</p>
+
+<p>throw new OMASServiceException("omas.omasservice.009");</p>
+
+<p>}</p>
+
+<p>boolean bln = service.setFeedback(systemID, feedbackType, feedbackContent);</p>
+
+<p>_log.info("反馈操作是否成功[true|false]：" + bln);</p>
+
+<p>return bln;</p>
+
+<p>}</p>
+
+<p>2.Hessian</p>
+
+<p>3.WebService</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/WenTao-Love/copySome.github.io/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/WenTao-Love/copySome.github.io/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/WenTao-Love/copySome.github.io"></a> is maintained by <a href="https://github.com/WenTao-Love">WenTao-Love</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
